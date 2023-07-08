@@ -1,6 +1,6 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 // "боевая" версия инстапро лежит в ключе prod
-const personalKey = "prod";
+const personalKey = "sofia";
 const baseHost = "https://webdev-hw-api.vercel.app";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
@@ -64,6 +64,81 @@ export function uploadImage({ file }) {
   return fetch(baseHost + "/api/upload/image", {
     method: "POST",
     body: data,
+  }).then((response) => {
+    return response.json();
+  });
+}
+
+export function getUserPosts({ id, token}) {
+  return fetch(postsHost + `/user-posts/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      return data.posts;
+    });
+}
+
+
+export function addLikeToPost({id, token}) {
+  return fetch(postsHost+`/${id}/like`,{
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  })
+  .then((response) => {
+    if (response.status == 401){
+      throw new Error("Чтобы поставить лайк, необходимо авторизоваться");
+    }
+    return response.json();
+  });
+}
+
+export function removeLikeToPost({id, token}) {
+  return fetch(postsHost+`/${id}/dislike`,{
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  })
+  .then((response) => {
+    if (response.status == 401){
+      throw new Error("Чтобы убрать лайк, необходимо авторизоваться");
+    }
+    return response.json();
+  });
+}
+
+export function addPost({ description, imageUrl, token }) {
+  return fetch(postsHost, {
+    method: "POST",
+    body: JSON.stringify({
+      description,
+      imageUrl,
+    }),
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 400) {
+      throw new Error("Добавьте описание или картинку");
+    }
+    return response.json();
+  });
+}
+
+export function deletePost({ id, token }) {
+  return fetch(postsHost + `/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: token,
+    },
   }).then((response) => {
     return response.json();
   });
