@@ -16,6 +16,8 @@ import {
   saveUserToLocalStorage,
 } from "./helpers.js";
 
+import { addPost } from "./api.js";
+
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
@@ -112,6 +114,7 @@ const renderApp = () => {
       onAddPostClick({ description, imageUrl }) {
         // TODO: реализовать добавление поста в API
         console.log("Добавляю пост...", { description, imageUrl });
+        addPost({ description, imageUrl, token: getToken() });
         goToPage(POSTS_PAGE);
       },
     });
@@ -120,6 +123,7 @@ const renderApp = () => {
   if (page === POSTS_PAGE) {
     return renderPostsPageComponent({
       appEl,
+      token: getToken()
     });
   }
 
