@@ -21,6 +21,7 @@ import { addPost } from "./api.js";
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
+export let userPosts = [];
 
 const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
