@@ -67,13 +67,11 @@ export function renderPostsPageComponent({ appEl, token }) {
         <img class="post-image" src="${post.imageUrl}">
       </div>
       <div class="post-likes">
-        <button data-post-id="${post.id}" data-liked="${
-        post.isLiked
-      }" class="like-button">
-        ${
-          post.isLiked
-            ? `<img src="./assets/images/like-active.svg">`
-            : `<img src="./assets/images/like-not-active.svg">`
+        <button data-post-id="${post.id}" data-liked="${post.isLiked
+        }" class="like-button">
+        ${post.isLiked
+          ? `<img src="./assets/images/like-active.svg">`
+          : `<img src="./assets/images/like-not-active.svg">`
         }
           
         </button>
@@ -110,14 +108,15 @@ export function renderPostsPageComponent({ appEl, token }) {
       goToPage(USER_POSTS_PAGE, {
         userId: userEl.dataset.userId,
       });
+      console.log(`рабоьтает переход на ${userEl.dataset.userId}`);
     });
   }
   const page = POSTS_PAGE;
   likePost(token, page, {});
 }
 
-export function renderUserPostComponent () {
-let userPostsHtml = userPosts
+export function renderUserPostComponent(appEl, token) {
+  let userPostsHtml = userPosts
     .map((post) => {
       return `  
     <li class="post">
@@ -125,13 +124,11 @@ let userPostsHtml = userPosts
         <img class="post-image" src="${post.imageUrl}">
       </div>
       <div class="post-likes">
-        <button data-post-id="${post.id}" data-liked="${
-          post.isLiked
-      }" class="like-button">
-        ${
-          post.isLiked
-            ? `<img src="./assets/images/like-active.svg">`
-            : `<img src="./assets/images/like-not-active.svg">`
+        <button data-post-id="${post.id}" data-liked="${post.isLiked
+        }" class="like-button">
+        ${post.isLiked
+          ? `<img src="./assets/images/like-active.svg">`
+          : `<img src="./assets/images/like-not-active.svg">`
         }
         </button>
         <p class="post-likes-text">
@@ -145,11 +142,34 @@ let userPostsHtml = userPosts
       <p class="post-date">
         ${new Date(post.createdAt)}
       </p>
-      
-    </li>
-    `;
+      </li>`;
     })
     .join("");
 
+  let userName = userPosts[0]?.user.name;
+  let userImage = userPosts[0]?.user.imageUrl;
+  const appHtml = `
+                <div class="page-container">
+                  <div class="header-container"></div>
+                  </div>
+                  <div class="posts-user-header">
+                      <img src="${userImage}" class="posts-user-header__user-image">
+                      <p class="posts-user-header__user-name">${userName}</p>
+                  </div>
+                  <ul class="posts posts-user">
+                    ${userPostsHtml}
+                  </ul>
+                `;
 
-  }
+  appEl.innerHTML = appHtml;
+
+  renderHeaderComponent({
+    element: document.querySelector(".header-container"),
+  });
+
+  const page = USER_POSTS_PAGE;
+  let data = {
+    userId: userPosts[0]?.user.id
+  };
+  likePost(token, page, data);
+}
