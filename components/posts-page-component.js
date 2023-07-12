@@ -1,6 +1,6 @@
 import { USER_POSTS_PAGE, POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, userPosts, goToPage } from "../index.js";
+import { posts, userPosts, goToPage, deletePost } from "../index.js";
 import { addLikeToPost, removeLikeToPost } from "../api.js";
 
 function showLikes(likes) {
@@ -47,6 +47,19 @@ function likePost(token, page, data) {
   }
 }
 
+function deletePostListener() {
+  const deleteButtons = document.querySelectorAll(".delete-button");
+  console.log(deleteButtons);
+  
+  for (const deleteButton of deleteButtons) {
+    deleteButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const id = deleteButton.dataset.id;
+      deletePost(id);
+    });
+  }
+}
+
 export function renderPostsPageComponent({ appEl, token }) {
   // TODO: реализовать рендер постов из api
   console.log("Актуальный список постов:", posts);
@@ -86,6 +99,9 @@ export function renderPostsPageComponent({ appEl, token }) {
       <p class="post-date">
         ${new Date(post.createdAt)}
       </p>
+      <button data-id=${post.id}  class="button delete-button">Удалить</button>
+      </div>
+      </div>
     </li>`;
     })
     .join("");
@@ -113,9 +129,11 @@ export function renderPostsPageComponent({ appEl, token }) {
   }
   const page = POSTS_PAGE;
   likePost(token, page, {});
+
+  deletePostListener();
 }
 
-export function renderUserPostComponent(appEl, token) {
+export function renderUserPostComponent({appEl, token}) {
   let userPostsHtml = userPosts
     .map((post) => {
       return `  
@@ -142,6 +160,9 @@ export function renderUserPostComponent(appEl, token) {
       <p class="post-date">
         ${new Date(post.createdAt)}
       </p>
+      <button data-id=${post.id}  class="button delete-button">Удалить</button>
+      </div>
+      </div>
       </li>`;
     })
     .join("");
@@ -171,5 +192,8 @@ export function renderUserPostComponent(appEl, token) {
   let data = {
     userId: userPosts[0]?.user.id
   };
+  
   likePost(token, page, data);
+  deletePostListener()
 }
+

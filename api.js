@@ -137,7 +137,7 @@ export function addPost({ description, imageUrl, token }) {
   });
 }
 
-export function deletePost({ id, token }) {
+export function deleteFetch({ id, token }) {
   return fetch(postsHost + `/${id}`, {
     method: "DELETE",
     headers: {

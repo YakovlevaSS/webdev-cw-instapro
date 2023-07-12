@@ -23,7 +23,7 @@ import {
   saveUserToLocalStorage,
 } from "./helpers.js";
 
-import { addPost, getUserPosts  } from "./api.js";
+import { addPost, getUserPosts, deleteFetch } from "./api.js";
 
 export let user = getUserFromLocalStorage();
 export let page = null;
@@ -148,9 +148,26 @@ const renderApp = () => {
       // return;
       return renderUserPostComponent({
         appEl,
-        token: getToken(),
+        token: getToken()
       });
   }
 };
+
+export function deletePost( id ) {
+    deleteFetch({ id, token: getToken() })
+    .then((newPosts) => {
+    posts = newPosts;
+    return getPosts({ token: getToken() })
+    .then((newPosts) => {
+      page = POSTS_PAGE;
+      posts = newPosts;
+      renderApp();
+    })
+    .catch((error) => {
+      console.error(error);
+      goToPage(POSTS_PAGE);
+    });
+    }) 
+  };
 
 goToPage(POSTS_PAGE);
