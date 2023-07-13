@@ -3,6 +3,10 @@ import { renderHeaderComponent } from "./header-component.js";
 import { posts, userPosts, goToPage, deletePost } from "../index.js";
 import { addLikeToPost, removeLikeToPost } from "../api.js";
 
+import { formatDistanceToNow } from "date-fns";
+import { ru } from "date-fns/locale"
+
+
 function showLikes(likes) {
   if (likes.length === 0) {
     return "0";
@@ -97,7 +101,7 @@ export function renderPostsPageComponent({ appEl, token }) {
         ${post.description}
       </p>
       <p class="post-date">
-        ${new Date(post.createdAt)}
+      ${formatDistanceToNow(new Date(post.createdAt), { locale: ru })}
       </p>
       <button data-id=${post.id}  class="button delete-button">Удалить</button>
       </div>
@@ -158,7 +162,7 @@ export function renderUserPostComponent({appEl, token}) {
         ${post.description}
       </p>
       <p class="post-date">
-        ${new Date(post.createdAt)}
+      ${formatDistanceToNow(new Date(post.createdAt), { locale: ru })}
       </p>
       <button data-id=${post.id}  class="button delete-button">Удалить</button>
       </div>
