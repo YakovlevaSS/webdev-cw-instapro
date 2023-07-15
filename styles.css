@@ -196,3 +196,7 @@
   width: 100%;
   text-align: center;
 }
+
+.delete-button {
+  margin-top: 10px;
+}
